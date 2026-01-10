@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="description"
+        content="GmailDev - Google-powered email infrastructure for developers. Deliver transactional and marketing emails with enterprise-grade reliability." />
+    <meta name="keywords"
+        content="email, developers, google, gmail, transactional email, marketing email, API, email infrastructure" />
+    <meta name="author" content="Ojas" />
+
+    <title>GmailDev - Email Infrastructure for Developers</title>
+
+    <!-- SEO & Social Media Meta Tags -->
+    <meta name="theme-color" content="#202124" />
+    <meta property="og:title" content="GmailDev - Email Infrastructure for Developers" />
+    <meta property="og:description"
+        content="Google-powered email infrastructure for developers. Deliver transactional and marketing emails with enterprise-grade reliability." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://gmaildev.netlify.app" />
+    <meta property="og:image" content="https://gmaildev.netlify.app/images/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="GmailDev - Email Infrastructure for Developers" />
+    <meta name="twitter:description"
+        content="Google-powered email infrastructure for developers. Deliver transactional and marketing emails with enterprise-grade reliability." />
+    <meta name="twitter:image" content="https://gmaildev.netlify.app/images/og-image.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/www.svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📧</text></svg>" />
+
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Google Fonts - Outfit & Rubik -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Rubik:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="style.css?v=dynamic_bg_fast" />
+
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
+        defer></script>
+
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+
+    <!-- Firebase SDKs (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js" defer></script>
+
+    <!-- Google Identity Services (Removed) -->
+</head>
+
+<body>
+    <!-- Welcome Loader -->
+    <div id="welcome-screen" class="welcome-screen">
+        <div class="welcome-content">
+            <div class="welcome-logo">📧</div>
+            <h1 class="welcome-title">GmailDev</h1>
+            <p class="welcome-subtitle">Enterprise Email Infrastructure</p>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== BACKGROUND DESIGN ========== -->
+    <div class="background-wrapper">
+        <img class="bg-carousel-image active" src="images/bg.png" alt="Background 1" data-index="0"
+            fetchpriority="high" />
+        <img class="bg-carousel-image" src="images/bg_datacenter.png" alt="Background 2" data-index="1"
+            loading="lazy" />
+        <img class="bg-carousel-image" src="images/bg_fiber.png" alt="Background 3" data-index="2" loading="lazy" />
+        <img class="bg-carousel-image" src="images/bg_global.png" alt="Background 4" data-index="3" loading="lazy" />
+        <div class="layer-blur"></div>
+        <div class="gradient-orb gradient-orb-1"></div>
+        <div class="gradient-orb gradient-orb-2"></div>
+        <div class="gradient-orb gradient-orb-3"></div>
+    </div>
+
+    <!-- ========== HEADER / NAVIGATION ========== -->
+    <header class="header glass" role="banner">
+        <h1 class="logo" onclick="navigate('home')" role="button" tabindex="0" aria-label="GmailDev Home">
+            GmailDev
+        </h1>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu" aria-expanded="false"
+            onclick="toggleMobileMenu()">
+            <span class="hamburger-icon">☰</span>
+        </button>
+
+        <!-- Desktop Navigation -->
+        <nav class="desktop-nav" role="navigation" aria-label="Main navigation">
+            <a href="#home" onclick="navigate('home'); return false;" aria-label="Navigate to Home">Home</a>
+            <a href="#company" onclick="navigate('company'); return false;" aria-label="Navigate to Company">Company</a>
+            <a href="#features" onclick="navigate('features'); return false;"
+                aria-label="Navigate to Features">Features</a>
+            <a href="#resources" onclick="navigate('resources'); return false;"
+                aria-label="Navigate to Resources">Resources</a>
+            <a href="#docs" onclick="navigate('docs'); return false;" aria-label="Navigate to Documentation">Docs</a>
+            <a href="#playground" onclick="navigate('playground'); return false;"
+                aria-label="Navigate to API Playground">Playground</a>
+            <a href="#status" onclick="navigate('status'); return false;"
+                aria-label="Navigate to System Status">Status</a>
+            <a href="#support" onclick="navigate('support'); return false;" aria-label="Navigate to Support">Support</a>
+
+            <!-- Smart Search Bar -->
+            <div class="search-container">
+                <div class="search-wrapper glass">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="globalSearch" class="search-input"
+                        placeholder="Search docs, projects, API... (Ctrl+K)" aria-label="Global search"
+                        autocomplete="off" />
+                    <kbd class="search-kbd">⌘K</kbd>
+                </div>
+                <!-- Search Results Dropdown -->
+                <div class="search-results glass" id="searchResults" style="display: none;">
+                    <div class="search-results-header">
+                        <span class="search-results-count">0 results</span>
+                    </div>
+                    <div class="search-results-list" id="searchResultsList">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-actions" style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
+                    <span class="sun-icon">☀️</span>
+                    <span class="moon-icon">🌙</span>
+                </button>
+                <button class="btn btn-light login-trigger" id="openLoginModalBtn" aria-label="Sign in to your account">
+                    Sign in
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Navigation Drawer -->
+    <aside class="mobile-nav glass" id="mobileNav" role="navigation" aria-label="Mobile navigation">
+        <a href="#home" onclick="navigate('home'); return false;">Home</a>
+        <a href="#company" onclick="navigate('company'); return false;">Company</a>
+        <a href="#features" onclick="navigate('features'); return false;">Features</a>
+        <a href="#resources" onclick="navigate('resources'); return false;">Resources</a>
+        <a href="#docs" onclick="navigate('docs'); return false;">Docs</a>
+        <a href="#playground" onclick="navigate('playground'); return false;">Playground</a>
+        <a href="#status" onclick="navigate('status'); return false;">Status</a>
+        <a href="#support" onclick="navigate('support'); return false;">Support</a>
+        <button class="btn btn-light login-trigger" id="openLoginModalBtnMobile" aria-label="Sign in to your account">
+            Sign in
+        </button>
+    </aside>
+
+    <!-- ========== HOME / HERO SECTION ========== -->
+    <main class="hero page-section" id="home" role="main">
+        <div class="content fade-up glass">
+            <!-- Status Badge -->
+            <div class="tag-box">
+                <div class="tag">POWERED BY GOOGLE ✦</div>
+            </div>
+
+            <!-- Main Heading -->
+            <h1 class="title">
+                EMAIL INFRASTRUCTURE <br />
+                FOR DEVELOPERS
+            </h1>
+
+            <!-- Description -->
+            <p class="description">
+                Enterprise-grade email delivery powered by Google's infrastructure.
+                Send transactional and marketing emails with 99.99% uptime, powerful APIs, and real-time analytics.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="buttons">
+                <a href="#docs" class="btn btn-outline glow" onclick="navigate('docs'); return false;"
+                    aria-label="View Documentation">
+                    Documentation →
+                </a>
+                <button class="btn btn-primary glow login-trigger" id="getStartedBtn"
+                    aria-label="Get started with GmailDev">
+                    Get Started
+                </button>
+            </div>
+
+            <!-- Hidden Google Sign-In Configuration -->
+            <!-- Google Sign-In Config (Removed) -->
+        </div>
+
+        <!-- 3D Spline Model -->
+        <spline-viewer class="robot-3d" url="https://prod.spline.design/HW2qpP2OyZgs9d0j/scene.splinecode"
+            loading="lazy" aria-hidden="true" mouse-controls="true" camera-controls="true">
+        </spline-viewer>
+    </main>
+
+    <!-- ========== COMPANY SECTION ========== -->
+    <section id="company" class="page-section content-section glass" style="display: none;" role="region"
+        aria-labelledby="company-heading">
+        <div class="section-container">
+            <h2 id="company-heading" class="section-title">About GmailDev</h2>
+            <p class="section-subtitle">Google-powered email infrastructure for modern developers</p>
+
+            <div class="content-grid">
+                <div class="content-card glass">
+                    <div class="card-icon">🚀</div>
+                    <h3>Our Mission</h3>
+                    <p>To provide developers with Google-grade email infrastructure that combines enterprise reliability
+                        with developer-friendly APIs, ensuring every message reaches its destination.</p>
+                </div>
+
+                <div class="content-card glass">
+                    <div class="card-icon">🌍</div>
+                    <h3>Global Reach</h3>
+                    <p>Serving developers and businesses across 150+ countries with 99.99% uptime and lightning-fast
+                        delivery speeds.</p>
+                </div>
+
+                <div class="content-card glass">
+                    <div class="card-icon">💡</div>
+                    <h3>Innovation First</h3>
+                    <p>Constantly evolving our platform with cutting-edge features, AI-powered insights, and seamless
+                        integrations.</p>
+                </div>
+
+                <div class="content-card glass">
+                    <div class="card-icon">🔒</div>
+                    <h3>Security & Privacy</h3>
+                    <p>Enterprise-grade security with end-to-end encryption, GDPR compliance, and SOC 2 Type II
+                        certification.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FEATURES SECTION ========== -->
+    <section id="features" class="page-section content-section glass" style="display: none;" role="region"
+        aria-labelledby="features-heading">
+        <div class="section-container">
+            <h2 id="features-heading" class="section-title">Powerful Features</h2>
+            <p class="section-subtitle">Everything you need to send emails at scale</p>
+
+            <div class="features-grid">
+                <div class="feature-card glass">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Lightning Fast</h3>
+                    <p>Send emails in milliseconds with our optimized infrastructure and global CDN network.</p>
+                </div>
+
+                <div class="feature-card glass">
+                    <div class="feature-icon">📊</div>
+                    <h3>Real-time Analytics</h3>
+                    <p>Track opens, clicks, bounces, and more with beautiful dashboards and detailed reports.</p>
+                </div>
+
+                <div class="feature-card glass">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Template Builder</h3>
+                    <p>Create stunning email templates with our drag-and-drop editor or use your own HTML.</p>
+                </div>
+
+                <div class="feature-card glass">
+                    <div class="feature-icon">🔌</div>
+                    <h3>Easy Integration</h3>
+                    <p>RESTful APIs, SDKs for all major languages, and comprehensive documentation.</p>
+                </div>
+
+                <div class="feature-card glass">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Spam Protection</h3>
+                    <p>Advanced algorithms ensure your emails land in inboxes, not spam folders.</p>
+                </div>
+
+                <div class="feature-card glass">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile Optimized</h3>
+                    <p>All emails are automatically optimized for mobile devices and responsive design.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== RESOURCES SECTION ========== -->
+    <section id="resources" class="page-section content-section glass" style="display: none;" role="region"
+        aria-labelledby="resources-heading">
+        <div class="section-container">
+            <h2 id="resources-heading" class="section-title">Developer Resources</h2>
+            <p class="section-subtitle">Tools and guides to help you succeed</p>
+
+            <div class="resources-grid">
+                <div class="resource-card glass">
+                    <h3>📚 API Reference</h3>
+                    <p>Complete API documentation with examples and interactive playground.</p>
+                    <a href="#docs" onclick="navigate('docs'); return false;" class="resource-link">Explore API →</a>
+                </div>
+
+                <div class="resource-card glass">
+                    <h3>🎓 Tutorials</h3>
+                    <p>Step-by-step guides for common use cases and advanced implementations.</p>
+                    <a href="#" class="resource-link">View Tutorials →</a>
+                </div>
+
+                <div class="resource-card glass">
+                    <h3>💬 Community</h3>
+                    <p>Join thousands of developers in our Discord and GitHub communities.</p>
+                    <a href="#" class="resource-link">Join Community →</a>
+                </div>
+
+                <div class="resource-card glass">
+                    <h3>🔧 SDKs & Libraries</h3>
+                    <p>Official libraries for Node.js, Python, PHP, Ruby, Go, and more.</p>
+                    <a href="#" class="resource-link">Download SDKs →</a>
+                </div>
+
+                <div class="resource-card glass">
+                    <h3>📖 Blog</h3>
+                    <p>Best practices, case studies, and product updates from our team.</p>
+                    <a href="#" class="resource-link">Read Blog →</a>
+                </div>
+
+                <div class="resource-card glass">
+                    <h3>🎯 Status Page</h3>
+                    <p>Real-time system status and historical uptime data.</p>
+                    <a href="#" class="resource-link">Check Status →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== DOCUMENTATION SECTION ========== -->
+    <section id="docs" class="page-section content-section glass" style="display: none;" role="region"
+        aria-labelledby="docs-heading">
+        <div class="section-container">
+            <!-- Breadcrumbs -->
+            <nav class="breadcrumbs" aria-label="Breadcrumb" style="margin-bottom: 2rem;">
+                <ol
+                    style="list-style: none; display: flex; gap: 0.5rem; padding: 0; font-size: 0.85rem; color: var(--text-muted);">
+                    <li><a href="#" onclick="navigate('home'); return false;" style="color: inherit;">Home</a></li>
+                    <li>/</li>
+                    <li><span id="breadcrumb-current">Docs</span></li>
+                </ol>
+            </nav>
+
+            <h2 id="docs-heading" class="section-title">Documentation</h2>
+            <p class="section-subtitle">Comprehensive guide to building with GmailDev</p>
+
+            <div class="docs-content">
+                <div class="docs-sidebar glass">
+                    <div class="sidebar-section">
+                        <h4>Getting Started</h4>
+                        <ul>
+                            <li><a href="#" class="active" onclick="showDocPage('intro')">Introduction</a></li>
+                            <li><a href="#" onclick="showDocPage('quickstart')">Quick Start</a></li>
+                        </ul>
+                    </div>
+                    <div class="sidebar-section">
+                        <h4>Account & Auth</h4>
+                        <ul>
+                            <li><a href="#" onclick="showDocPage('auth')">Authentication</a></li>
+                            <li><a href="#" onclick="showDocPage('apikeys')">Managing API Keys</a></li>
+                        </ul>
+                    </div>
+                    <div class="sidebar-section">
+                        <h4>API Reference</h4>
+                        <ul>
+                            <li><a href="#" onclick="showDocPage('send')">Sending Emails</a></li>
+                            <li><a href="#" onclick="showDocPage('templates')">Email Templates</a></li>
+                            <li><a href="#" onclick="showDocPage('webhooks')">Webhooks</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="docs-main glass">
+                    <div id="doc-intro" class="doc-page">
+                        <h3>Welcome to GmailDev</h3>
+                        <p>GmailDev is a powerful, developer-first email infrastructure that allows you to send,
+                            receive, and track emails with ease. Built on top of enterprise-grade cloud architecture, we
+                            provide the tools you need to integrate email features into your applications in minutes.
+                        </p>
+                        <div class="warning-alert glass"
+                            style="margin-top: 1.5rem; border-left: 4px solid var(--google-yellow); padding: 1.5rem; background: rgba(251, 188, 4, 0.05);">
+                            <strong>Note:</strong> This documentation is for version 2.0 of the API.
+                        </div>
+                    </div>
+
+                    <div id="doc-quickstart" class="doc-page" style="display: none;">
+                        <h3>Quick Start Guide</h3>
+                        <p>This guide will help you send your first email in under 5 minutes.</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>JavaScript</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre><code>npm install @gmaildev/sdk</code></pre>
+                        </div>
+                    </div>
+
+                    <div id="doc-auth" class="doc-page" style="display: none;">
+                        <h3>Authentication</h3>
+                        <p>All API requests must be authenticated using an API Key. You can generate keys in your <a
+                                href="#" onclick="navigate('dashboard')">Dashboard</a>.</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>cURL</span>
+                                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            </div>
+                            <pre><code>curl -H "Authorization: Bearer YOUR_API_KEY" https://api.gmaildev.com/v1/user</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ========== DASHBOARD SECTION ========== -->
+    <section id="dashboard" class="dashboard page-section glass" style="display: none;" role="region"
+        aria-labelledby="dashboard-heading">
+
+        <div class="dashboard-layout container">
+            <!-- Sidebar Navigation -->
+            <aside class="dashboard-sidebar">
+                <div class="sidebar-header" style="padding: 1rem 1.5rem; margin-bottom: 1rem;">
+                    <h2 id="dashboard-heading" style="font-size: 1.25rem; font-weight: bold;">Dashboard</h2>
+                </div>
+
+                <button class="sidebar-nav-item active" onclick="showDashboardTab('overview')">
+                    <span class="sidebar-icon">🏠</span>
+                    <span>Overview</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="showDashboardTab('analytics')">
+                    <span class="sidebar-icon">📊</span>
+                    <span>Analytics</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="showDashboardTab('projects')">
+                    <span class="sidebar-icon">📁</span>
+                    <span>Projects</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="showDashboardTab('templates')">
+                    <span class="sidebar-icon">🎨</span>
+                    <span>Templates</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="showDashboardTab('webhooks')">
+                    <span class="sidebar-icon">🔌</span>
+                    <span>Webhooks</span>
+                </button>
+
+                <div
+                    style="margin-top: 2rem; padding: 0 1.5rem 0.5rem; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: bold;">
+                    Developer Tools</div>
+
+                <button class="sidebar-nav-item" onclick="showDashboardTab('apiKeys')">
+                    <span class="sidebar-icon">🔑</span>
+                    <span>API Keys</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="showDashboardTab('spamChecker')">
+                    <span class="sidebar-icon">🛡️</span>
+                    <span>Spam Checker</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="showDashboardTab('logs')">
+                    <span class="sidebar-icon">📜</span>
+                    <span>Logs</span>
+                </button>
+
+                <div style="margin-top: auto; padding: 1.5rem; border-top: 1px solid var(--glass-border);">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <img id="userAvatar" src="https://ui-avatars.com/api/?name=User&background=random" alt="Profile"
+                            style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--google-blue);">
+                        <div style="overflow: hidden;">
+                            <div id="userNameDisplay"
+                                style="font-size: 0.9rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                User</div>
+                            <div id="userStatus" style="font-size: 0.75rem; color: var(--google-green);">● Online</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline btn-sm full-width" onclick="logout()"
+                        style="justify-content: center; font-size: 0.8rem;">Log Out</button>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="dashboard-main-content">
+                <!-- Overview Tab -->
+                <div id="overviewTab" class="dashboard-tab-content">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3rem;">
+                        <div>
+                            <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Welcome back! 👋</h2>
+                            <p style="color: var(--text-muted);">Here's what's happening with your projects today.</p>
+                        </div>
+                        <div class="test-mode-container glass"
+                            style="padding: 0.5rem 1rem; border-radius: 12px; display: flex; align-items: center; gap: 1rem;">
+                            <span style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted);">TEST
+                                MODE</span>
+                            <label class="switch">
+                                <input type="checkbox" id="testModeToggle" onchange="toggleTestMode()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- KPI Cards (Compact) -->
+                    <div class="stats-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+                        <div class="stat-card glass" style="padding: 1.5rem;">
+                            <div style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">EMAILS SENT
+                            </div>
+                            <div id="statsEmails" style="font-size: 1.8rem; font-weight: 800;">0</div>
+                        </div>
+                        <div class="stat-card glass" style="padding: 1.5rem;">
+                            <div style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">API
+                                REQUESTS</div>
+                            <div id="statsRequests" style="font-size: 1.8rem; font-weight: 800;">0</div>
+                        </div>
+                        <div class="stat-card glass" style="padding: 1.5rem;">
+                            <div style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">UPTIME
+                            </div>
+                            <div style="font-size: 1.8rem; font-weight: 800; color: var(--google-green);">99.9%</div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions Row -->
+                    <div style="margin-bottom: 3rem;">
+                        <h4 style="margin-bottom: 1.5rem; font-size: 1.1rem;">Quick Actions</h4>
+                        <div class="dashboard-actions"
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem;">
+                            <button class="action-btn glass" onclick="openTemplateModal()">
+                                <span style="font-size: 1.5rem;">🎨</span>
+                                <span style="font-size: 0.9rem;">New Template</span>
+                            </button>
+                            <button class="action-btn glass" id="openSendEmailModal">
+                                <span style="font-size: 1.5rem;">✉️</span>
+                                <span style="font-size: 0.9rem;">Send Email</span>
+                            </button>
+                            <button class="action-btn glass" onclick="showDashboardTab('apiKeys')">
+                                <span style="font-size: 1.5rem;">🔑</span>
+                                <span style="font-size: 0.9rem;">API Keys</span>
+                            </button>
+                            <button class="action-btn glass" onclick="toggleDeepAnalytics()">
+                                <span style="font-size: 1.5rem;">📊</span>
+                                <span style="font-size: 0.9rem;">Deep Stats</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1.2fr 1.8fr; gap: 2.5rem;">
+                        <!-- Onboarding Checklist (Moved here) -->
+                        <div id="onboardingChecklist" class="onboarding-card glass" style="height: fit-content;">
+                            <div class="onboarding-header" style="margin-bottom: 1.5rem;">
+                                <h4 style="margin: 0;">Setup Guide</h4>
+                                <button class="dismiss-btn" onclick="dismissOnboarding()">✕</button>
+                            </div>
+                            <div class="onboarding-progress-container" style="margin-bottom: 2rem;">
+                                <div class="progress-info"
+                                    style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 0.5rem;">
+                                    <span id="onboardingPercent">0%</span>
+                                    <span>Complete</span>
+                                </div>
+                                <div class="progress-bar-bg">
+                                    <div id="onboardingProgressBar" class="progress-bar-fill"></div>
+                                </div>
+                            </div>
+                            <div class="checklist-items" style="display: flex; flex-direction: column; gap: 1rem;">
+                                <div class="checklist-item" id="step-create-project"
+                                    onclick="showDashboardTab('projects')" style="padding: 1rem;">
+                                    <div class="check-circle"></div>
+                                    <div class="checklist-content">
+                                        <h5 style="margin: 0; font-size: 0.9rem;">Create Project</h5>
+                                    </div>
+                                </div>
+                                <div class="checklist-item" id="step-api-key" onclick="showDashboardTab('apiKeys')"
+                                    style="padding: 1rem;">
+                                    <div class="check-circle"></div>
+                                    <div class="checklist-content">
+                                        <h5 style="margin: 0; font-size: 0.9rem;">Generate API Key</h5>
+                                    </div>
+                                </div>
+                                <div class="checklist-item" id="step-test-email"
+                                    onclick="document.getElementById('openSendEmailModal').click()"
+                                    style="padding: 1rem;">
+                                    <div class="check-circle"></div>
+                                    <div class="checklist-content">
+                                        <h5 style="margin: 0; font-size: 0.9rem;">Send Test Email</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Traffic Summary -->
+                        <div class="chart-container glass" style="padding: 2rem;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                                <h4 style="margin: 0;">Email Traffic</h4>
+                                <div class="chart-controls" style="display: flex; gap: 0.5rem;">
+                                    <button class="chart-btn btn-sm active">7D</button>
+                                    <button class="chart-btn btn-sm">30D</button>
+                                </div>
+                            </div>
+                            <div style="height: 300px;"><canvas id="trafficChart"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Tab -->
+                <div id="analyticsTab" class="dashboard-tab-content" style="display: none;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+                        <div>
+                            <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Performance Analytics</h2>
+                            <p style="color: var(--text-muted);">Detailed insights into your delivery and engagement.
+                            </p>
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <select id="dateRangeSelector" class="date-selector glass"
+                                style="padding: 0.6rem 1rem; border-radius: 10px;">
+                                <option value="7">Last 7 Days</option>
+                                <option value="30" selected>Last 30 Days</option>
+                                <option value="90">90 Days</option>
+                            </select>
+                            <button class="btn btn-outline" id="exportAnalytics">📊 Export CSV</button>
+                        </div>
+                    </div>
+
+                    <div class="analytics-kpi-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+                        <div class="kpi-card glass" style="padding: 2rem;">
+                            <h4 style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.75rem;">DELIVERY
+                                RATE</h4>
+                            <p id="kpiDeliveryRate"
+                                style="font-size: 2rem; font-weight: 800; color: var(--google-green);">0%</p>
+                        </div>
+                        <div class="kpi-card glass" style="padding: 2rem;">
+                            <h4 style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.75rem;">OPEN RATE
+                            </h4>
+                            <p id="kpiOpenRate" style="font-size: 2rem; font-weight: 800; color: var(--google-blue);">0%
+                            </p>
+                        </div>
+                        <div class="kpi-card glass" style="padding: 2rem;">
+                            <h4 style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.75rem;">CLICK RATE
+                            </h4>
+                            <p id="kpiClickRate"
+                                style="font-size: 2rem; font-weight: 800; color: var(--google-yellow);">0%</p>
+                        </div>
+                        <div class="kpi-card glass" style="padding: 2rem;">
+                            <h4 style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.75rem;">BOUNCE
+                                RATE</h4>
+                            <p style="font-size: 2rem; font-weight: 800; color: var(--google-red);">0.5%</p>
+                        </div>
+                    </div>
+
+                    <div class="analytics-charts-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+                        <div class="chart-card glass" style="padding: 2rem;">
+                            <h4 style="margin-bottom: 2rem;">📈 Delivery Trends</h4>
+                            <div style="height: 300px;"><canvas id="deliveryTrendsChart"></canvas></div>
+                        </div>
+                        <div class="chart-card glass" style="padding: 2rem;">
+                            <h4 style="margin-bottom: 2rem;">📊 Open Distribution</h4>
+                            <div style="height: 300px;"><canvas id="openRateChart"></canvas></div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-table-container glass" style="padding: 2rem;">
+                        <h4 style="margin-bottom: 2rem;">📋 Campaign Statistics</h4>
+                        <div style="overflow-x: auto;">
+                            <table class="analytics-table" style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr
+                                        style="text-align: left; border-bottom: 1px solid var(--glass-border); background: rgba(255,255,255,0.02);">
+                                        <th style="padding: 1.25rem;">Campaign</th>
+                                        <th style="padding: 1.25rem;">Sent</th>
+                                        <th style="padding: 1.25rem;">Delivered</th>
+                                        <th style="padding: 1.25rem;">Opens</th>
+                                        <th style="padding: 1.25rem;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="analyticsTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects Tab -->
+                <div id="projectsTab" class="dashboard-tab-content" style="display: none;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+                        <div>
+                            <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">My Projects</h2>
+                            <p style="color: var(--text-muted);">Manage your email sources and configurations.</p>
+                        </div>
+                        <button class="btn btn-primary" id="createProjectBtn">+ New Project</button>
+                    </div>
+                    <div id="projectList" class="projects-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+                        <p class="empty-state">No projects yet. Create one to get started!</p>
+                    </div>
+                </div>
+
+                <!-- Project Dashboard Tab (Nested) -->
+                <div id="projectDashboardTab" class="dashboard-tab-content" style="display: none;">
+                    <div class="project-header glass" style="padding: 2rem; border-radius: 12px; margin-bottom: 2rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h2 id="p_projectName" style="font-size: 2rem; margin-bottom: 0.5rem;">Project Name</h2>
+                                <div style="display: flex; gap: 15px; align-items: center;">
+                                    <code id="p_projectId"
+                                        style="font-size: 0.8rem; color: var(--text-muted);">proj_id</code>
+                                    <span class="badge badge-success">Active</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline" onclick="showDashboardTab('projects')">Back to
+                                Projects</button>
+                        </div>
+                    </div>
+
+                    <!-- Project Sub-Navigation -->
+                    <div class="project-sub-nav glass"
+                        style="margin-bottom: 2rem; display: flex; gap: 10px; padding: 0.5rem; border-radius: 10px;">
+                        <button class="project-sub-nav-item active" onclick="showProjectSubTab('p_analytics')">📊
+                            Analytics</button>
+                        <button class="project-sub-nav-item" onclick="showProjectSubTab('p_sendEmail')">📤 Send
+                            Email</button>
+                        <button class="project-sub-nav-item" onclick="showProjectSubTab('p_templates')">🧩
+                            Templates</button>
+                        <button class="project-sub-nav-item" onclick="showProjectSubTab('p_apiKeys')">🔑 API
+                            Keys</button>
+                        <button class="project-sub-nav-item" onclick="showProjectSubTab('p_settings')">⚙️
+                            Settings</button>
+                    </div>
+
+                    <!-- Project Sub-Tab Contents -->
+                    <div id="projectSubTabs">
+                        <div id="p_analyticsContent" class="project-sub-tab-content">
+                            <!-- Project Specific Analytics -->
+                            <div class="glass" style="padding: 2rem; min-height: 300px;">
+                                <h3>Performance Over Time</h3>
+                                <canvas id="projectTrafficChart" style="max-height: 250px;"></canvas>
+                            </div>
+                        </div>
+
+                        <div id="p_sendEmailContent" class="project-sub-tab-content" style="display: none;">
+                            <!-- Send Email Logic will move/copy here -->
+                            <div class="glass" style="padding: 2rem;">
+                                <h3>Sandbox Explorer</h3>
+                                <p>Test email delivery for this project.</p>
+                                <button class="btn btn-primary" onclick="openModal(emailModal)"
+                                    style="margin-top: 1rem;">Open Sandbox</button>
+                            </div>
+                        </div>
+
+                        <div id="p_templatesContent" class="project-sub-tab-content" style="display: none;">
+                            <div id="projectTemplateList" class="projects-grid"></div>
+                        </div>
+
+                        <div id="p_apiKeysContent" class="project-sub-tab-content" style="display: none;">
+                            <div class="glass" style="padding: 2rem;">
+                                <h3>Project API Key</h3>
+                                <p style="margin-bottom:1rem;">Use this key to authorize requests for this project.</p>
+                                <div class="api-key-container glass"
+                                    style="display: flex; gap: 1rem; align-items: center; padding: 1rem;">
+                                    <input type="password" id="p_apiKey" readonly value="md_..." class="glass"
+                                        style="border:none; flex:1; color:var(--google-green); font-family:monospace;">
+                                    <button class="btn btn-sm" onclick="copyValue('p_apiKey')">Copy</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="p_settingsContent" class="project-sub-tab-content" style="display: none;">
+                            <div class="glass" style="padding: 2rem;">
+                                <h3>Project Settings</h3>
+                                <button class="btn btn-outline"
+                                    style="color:var(--google-red); border-color:var(--google-red); margin-top:2rem;">Delete
+                                    Project</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Templates Tab -->
+                <div id="templatesTab" class="dashboard-tab-content" style="display: none;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+                        <div>
+                            <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Email Templates</h2>
+                            <p style="color: var(--text-muted);">Create and manage reusable email layouts.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openTemplateModal()">+ New Template</button>
+                    </div>
+                    <div id="templateList" class="projects-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+                        <p class="empty-state">No templates yet. Build one to save time!</p>
+                    </div>
+                </div>
+
+                <!-- API Keys Tab -->
+                <div id="apiKeysTab" class="dashboard-tab-content" style="display: none;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+                        <div>
+                            <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Developer API Keys</h2>
+                            <p style="color: var(--text-muted);">Securely manage your access credentials.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="generateAPIKey()">Generate New Key</button>
+                    </div>
+                    <div id="apiKeysList" class="glass"
+                        style="padding: 2.5rem; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                        <p class="empty-state">No API keys generated yet.</p>
+                    </div>
+                </div>
+
+                <!-- Spam Checker Tab -->
+                <div id="spamCheckerTab" class="dashboard-tab-content" style="display: none;">
+                    <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Spam Score Analyzer</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 3rem;">Test your email against the latest SPAM
+                        filters.</p>
+
+                    <div class="glass" style="padding: 3rem;">
+                        <label
+                            style="display: block; margin-bottom: 1rem; font-weight: bold; color: var(--text-secondary);">Email
+                            HTML Content</label>
+                        <textarea id="spamCheckContent" class="glass"
+                            style="width: 100%; min-height: 300px; padding: 1.5rem; color: white; margin-bottom: 2rem; font-family: 'Roboto Mono', monospace; line-height: 1.6;"
+                            placeholder="Paste your email HTML here..."></textarea>
+                        <button class="btn btn-primary" onclick="checkSpamScore()"
+                            style="padding: 1.2rem 3rem; font-size: 1rem; font-weight: bold;">Analyze
+                            Deliverability</button>
+
+                        <div id="spamResult" style="margin-top: 4rem; display: none; animation: slideUp 0.5s ease-out;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem;">
+                                <div>
+                                    <h4 style="margin: 0; font-size: 1.25rem;">Spam Score Result</h4>
+                                    <p id="spamFeedback" style="color: var(--text-muted); margin: 0.5rem 0 0;"></p>
+                                </div>
+                                <div id="spamScoreText"
+                                    style="font-size: 2.5rem; font-weight: 900; color: var(--google-green);">0/10</div>
+                            </div>
+                            <div class="spam-meter-bg"
+                                style="width: 100%; height: 16px; background: rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                                <div id="spamMeterFill"
+                                    style="height: 100%; width: 0%; background: linear-gradient(90deg, var(--google-red), var(--google-yellow), var(--google-green)); transition: width 1.5s cubic-bezier(0.19, 1, 0.22, 1);">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Webhooks Tab -->
+                <div id="webhooksTab" class="dashboard-tab-content" style="display: none;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+                        <div>
+                            <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Project Webhooks</h2>
+                            <p style="color: var(--text-muted);">Real-time HTTP notifications for system events.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openWebhookModal()">+ Add Webhook</button>
+                    </div>
+                    <div id="webhooksList" class="projects-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+                        <p class="empty-state">No webhooks configured. Add one to receive real-time updates!</p>
+                    </div>
+                </div>
+
+                <!-- Logs Tab -->
+                <div id="logsTab" class="dashboard-tab-content" style="display: none;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+                        <div>
+                            <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Execution Logs</h2>
+                            <p style="color: var(--text-muted);">Real-time monitoring of all API events.</p>
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <button class="btn btn-outline" onclick="clearLogs()">Clear All</button>
+                            <button class="btn btn-outline" onclick="renderLogs()">Refresh</button>
+                        </div>
+                    </div>
+                    <div class="glass" style="overflow: hidden; border-radius: 16px;">
+                        <table class="analytics-table"
+                            style="width: 100%; text-align: left; border-collapse: collapse;">
+                            <thead>
+                                <tr
+                                    style="border-bottom: 1px solid var(--glass-border); background: rgba(255,255,255,0.03);">
+                                    <th style="padding: 1.5rem;">Timestamp</th>
+                                    <th style="padding: 1.5rem;">Event</th>
+                                    <th style="padding: 1.5rem;">Details</th>
+                                    <th style="padding: 1.5rem;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </section>
+
+    <!-- ========== LOGIN / SIGNUP MODAL ========== -->
+    <div class="modal-overlay" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+        <div class="modal-content glass">
+            <button class="close-modal" id="closeAuthModal" aria-label="Close authentication modal">&times;</button>
+
+            <!-- Modal Header -->
+            <div class="form-header">
+                <h2 id="authTitle">Sign In</h2>
+                <p id="authSubtitle">Access your developer dashboard</p>
+            </div>
+
+            <!-- Toggle Buttons -->
+            <div class="toggle-box" id="authToggleBox">
+                <button class="toggle-btn active" id="loginToggle" onclick="switchAuthForm('loginForm')">Sign
+                    In</button>
+                <button class="toggle-btn" id="signupToggle" onclick="switchAuthForm('signupForm')">Sign Up</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form active-form" novalidate onsubmit="handleLogin(event)">
+                <div class="lockout-msg" id="lockoutMsg"
+                    style="display: none; background: rgba(255, 71, 87, 0.1); color: #ff4757; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; text-align: center; border: 1px solid rgba(255, 71, 87, 0.2);">
+                    Too many failed attempts. Account locked for <span id="lockoutTimer">30</span>s.
+                </div>
+                <div class="error-msg" id="loginError" role="alert"></div>
+
+                <div class="input-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" name="email" placeholder="you@example.com" required
+                        autocomplete="email" aria-required="true" />
+                </div>
+
+                <div class="input-group password-wrapper">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="password" placeholder="Enter your password" required
+                        autocomplete="current-password" aria-required="true" />
+                    <span class="toggle-password" role="button" tabindex="0"
+                        aria-label="Toggle password visibility">👁️</span>
+                </div>
+
+                <div class="options-row">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="rememberMe" name="remember" />
+                        <span class="checkmark"></span>
+                        Remember Me
+                    </label>
+                    <a href="#" class="forgot-link">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary full-width">Sign In</button>
+
+                <div class="divider">
+                    <span>or continue with</span>
+                </div>
+
+                <button type="button" class="btn btn-outline full-width google-btn" onclick="signInWithGoogle()"
+                    style="display: flex; align-items: center; justify-content: center; gap: 10px; background: white; color: #3c4043; border: 1px solid #dadce0; margin-bottom: 1.5rem;">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"
+                        style="width: 18px; height: 18px;">
+                    <span>Sign in with Google</span>
+                </button>
+            </form>
+
+            <!-- Signup Form -->
+            <form id="signupForm" class="auth-form" style="display: none;" novalidate onsubmit="handleSignup(event)">
+                <div class="error-msg" id="signupError" role="alert"></div>
+
+                <div class="input-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" name="name" placeholder="John Doe" required autocomplete="name"
+                        aria-required="true" />
+                </div>
+
+                <div class="input-group">
+                    <label for="signupEmail">Email Address</label>
+                    <input type="email" id="signupEmail" name="email" placeholder="you@example.com" required
+                        autocomplete="email" aria-required="true" />
+                </div>
+
+                <div class="input-group password-wrapper">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" name="password" placeholder="Create a password" required
+                        autocomplete="new-password" aria-required="true" />
+                    <span class="toggle-password" role="button" tabindex="0"
+                        aria-label="Toggle password visibility">👁️</span>
+                </div>
+
+                <button type="submit" class="btn btn-primary full-width">Create Account</button>
+
+                <div class="divider">
+                    <span>or continue with</span>
+                </div>
+
+                <button type="button" class="btn btn-outline full-width google-btn" onclick="signInWithGoogle()"
+                    style="display: flex; align-items: center; justify-content: center; gap: 10px; background: white; color: #3c4043; border: 1px solid #dadce0; margin-bottom: 1.5rem;">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"
+                        style="width: 18px; height: 18px;">
+                    <span>Sign up with Google</span>
+                </button>
+            </form>
+
+            <!-- OTP Verification Form -->
+            <form id="otpForm" class="auth-form" style="display: none;" onsubmit="handleVerifyOTP(event)">
+                <div class="error-msg" id="otpError" role="alert"></div>
+                <div class="otp-instruction" style="margin-bottom: 2rem; text-align: center;">
+                    <p style="color: var(--text-muted);">We've sent a 6-digit verification code to <br><strong
+                            id="sentEmailDisplay" style="color: var(--google-blue);"></strong></p>
+                </div>
+                <div class="otp-input-container"
+                    style="display: flex; gap: 10px; justify-content: center; margin-bottom: 2rem;">
+                    <input type="text" class="otp-input glass" maxlength="1" pattern="\d*" inputmode="numeric"
+                        required />
+                    <input type="text" class="otp-input glass" maxlength="1" pattern="\d*" inputmode="numeric"
+                        required />
+                    <input type="text" class="otp-input glass" maxlength="1" pattern="\d*" inputmode="numeric"
+                        required />
+                    <input type="text" class="otp-input glass" maxlength="1" pattern="\d*" inputmode="numeric"
+                        required />
+                    <input type="text" class="otp-input glass" maxlength="1" pattern="\d*" inputmode="numeric"
+                        required />
+                    <input type="text" class="otp-input glass" maxlength="1" pattern="\d*" inputmode="numeric"
+                        required />
+                </div>
+                <button type="submit" class="btn btn-primary full-width">Verify & Continue</button>
+                <div style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem;">
+                    <span style="color: var(--text-muted);">Didn't receive code?</span>
+                    <button type="button" class="btn-text" onclick="resendOTP()"
+                        style="color: var(--google-blue); background: none; border: none; font-weight: 500; cursor: pointer; padding: 0 5px;">Resend
+                        OTP</button>
+                </div>
+                <button type="button" class="btn-text" onclick="switchAuthForm('loginForm')"
+                    style="display: block; width: 100%; margin-top: 1.5rem; color: var(--text-muted); background: none; border: none; font-size: 0.85rem; cursor: pointer;">Back
+                    to Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== EMAIL SENDING MODAL ========== -->
+    <div class="modal-overlay" id="emailModal" role="dialog" aria-modal="true" aria-labelledby="emailModalTitle">
+        <div class="modal-content glass">
+            <button class="close-modal" id="closeEmailModal" aria-label="Close email modal">&times;</button>
+
+            <div class="form-header">
+                <h2 id="emailModalTitle">Send Test Email</h2>
+                <p>Send a test email powered by Google's infrastructure</p>
+            </div>
+
+            <form id="emailForm" novalidate>
+                <div class="input-group">
+                    <label for="emailTo">Recipient Email</label>
+                    <input type="email" id="emailTo" placeholder="recipient@example.com" required
+                        aria-required="true" />
+                </div>
+
+                <div class="input-group">
+                    <label for="emailSubject">Subject</label>
+                    <input type="text" id="emailSubject" placeholder="Test Email from MCdock" required
+                        aria-required="true" />
+                </div>
+
+                <div class="input-group">
+                    <label for="emailBody">Message</label>
+                    <textarea id="emailBody" rows="5" placeholder="Enter your message here..." required
+                        aria-required="true"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary full-width" id="sendEmailBtn">
+                    Send Email
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== PROFILE MODAL ========== -->
+    <div class="modal-overlay" id="profileModal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+        <div class="modal-content glass">
+            <button class="close-modal" id="closeProfileModal" aria-label="Close profile modal">&times;</button>
+            <div class="form-header">
+                <h2 id="profileModalTitle">My Profile</h2>
+                <p>Manage your account details</p>
+            </div>
+            <div class="profile-details" style="text-align: left; margin-top: 1rem;">
+                <div class="input-group">
+                    <label>Name</label>
+                    <div id="profileName" class="glass-inset" style="padding: 10px; border-radius: 6px; color: white;">-
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <div id="profileEmail" class="glass-inset" style="padding: 10px; border-radius: 6px; color: white;">
+                        -</div>
+                </div>
+                <div class="input-group">
+                    <label>User ID</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="text" id="profileUid" readonly
+                            style="flex-grow: 1; background: rgba(255,255,255,0.05); color: #aaa; border: none;">
+                        <button class="btn btn-sm btn-outline" onclick="copyToClipboard('profileUid')">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== TEMPLATE MODAL ========== -->
+    <div class="modal-overlay" id="templateModal" role="dialog" aria-modal="true" aria-labelledby="templateModalTitle">
+        <div class="modal-content glass" style="max-width: 800px;">
+            <button class="close-modal" onclick="closeModal(document.getElementById('templateModal'))"
+                aria-label="Close template modal">&times;</button>
+
+            <div class="form-header">
+                <h2 id="templateModalTitle">Template Builder</h2>
+                <p>Create reusable email templates</p>
+            </div>
+
+            <form id="templateBuilderForm" onsubmit="window.saveTemplate(event)" novalidate>
+                <div class="input-group">
+                    <label for="templateName">Template Name</label>
+                    <input type="text" id="templateName" placeholder="Welcome Email" required aria-required="true" />
+                </div>
+
+                <div class="input-group">
+                    <label for="templateSubject">Default Subject</label>
+                    <input type="text" id="templateSubject" placeholder="Welcome to our platform!" required
+                        aria-required="true" />
+                </div>
+
+                <div class="input-group">
+                    <label for="templateBody">HTML Content</label>
+                    <textarea id="templateBody" rows="10" placeholder="<h1>Hello {{name}}!</h1>" required
+                        aria-required="true" style="font-family: monospace;"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary full-width">Save Template</button>
+                    <button type="button" class="btn btn-outline full-width"
+                        onclick="previewTemplate()">Preview</button>
+                </div>
+            </form>
+
+            <div id="templatePreview" class="glass"
+                style="margin-top: 2rem; display: none; padding: 1rem; background: white; color: black; border-radius: 8px; max-height: 300px; overflow-y: auto;">
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== WEBHOOK MODAL ========== -->
+    <div class="modal-overlay" id="webhookModal" role="dialog" aria-modal="true" aria-labelledby="webhookModalTitle">
+        <div class="modal-content glass">
+            <button class="close-modal" onclick="closeModal(document.getElementById('webhookModal'))"
+                aria-label="Close webhook modal">&times;</button>
+
+            <div class="form-header">
+                <h2 id="webhookModalTitle">Add Webhook</h2>
+                <p>Register a URL to receive event notifications</p>
+            </div>
+
+            <form id="webhookForm" onsubmit="window.saveWebhook(event)" novalidate>
+                <div class="input-group">
+                    <label for="webhookUrl">Target URL</label>
+                    <input type="url" id="webhookUrl" placeholder="https://your-api.com/webhook" required
+                        aria-required="true" />
+                    <small
+                        style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.5rem; display: block;">Must
+                        be a valid HTTPS URL</small>
+                </div>
+
+                <div class="input-group">
+                    <label style="margin-bottom: 1rem; display: block;">Events to subscribe</label>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" id="eventEmailSent" checked />
+                            <span class="checkmark"></span>
+                            Email Sent (email.sent)
+                        </label>
+                        <label class="custom-checkbox">
+                            <input type="checkbox" id="eventEmailError" />
+                            <span class="checkmark"></span>
+                            Email Error (email.error)
+                        </label>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary full-width">Add Webhook</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== CREATE PROJECT MODAL ========== -->
+    <div class="modal-overlay" id="projectModal" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle">
+        <div class="modal-content glass">
+            <button class="close-modal" id="closeProjectModal" aria-label="Close project modal">&times;</button>
+
+            <div class="form-header">
+                <h2 id="projectModalTitle">Create New Project</h2>
+                <p>Set up a new email project</p>
+            </div>
+
+            <form id="projectForm" novalidate>
+                <div class="input-group">
+                    <label for="projectName">
+                        <span>📁</span> Project Name
+                    </label>
+                    <input type="text" id="projectName" placeholder="e.g. Acme Marketing Campaign" required
+                        aria-required="true" />
+                </div>
+
+                <div class="input-group">
+                    <label for="projectDomain">
+                        <span>🌐</span> Domain (Optional)
+                    </label>
+                    <input type="text" id="projectDomain" placeholder="e.g. marketing.acme.com" />
+                </div>
+
+                <div class="input-group">
+                    <label for="projectDescription">
+                        <span>📝</span> Description
+                    </label>
+                    <textarea id="projectDescription"
+                        placeholder="What is this project for? (e.g. Transactional emails for staging environment)"
+                        rows="3"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="projectCategory">
+                        <span>🏷️</span> Category
+                    </label>
+                    <select id="projectCategory" class="glass-select">
+                        <option value="app">📱 Mobile App</option>
+                        <option value="website">💻 Website</option>
+                        <option value="saas" selected>🚀 SaaS Platform</option>
+                        <option value="internal">🛠️ Internal Tool</option>
+                        <option value="other">✨ Other</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary full-width" style="margin-top: 1rem; padding: 1.2rem;">
+                    <span>✨</span> Create Project
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== WELCOME OVERLAY ========== -->
+    <div id="welcomeOverlay" class="welcome-overlay">
+        <div class="welcome-content">
+            <div class="welcome-badge">✦ GmailDev ✦</div>
+            <h1 class="welcome-message">Welcome back, <span id="welcomeUserName">Developer</span>!</h1>
+            <p class="welcome-status">Preparing your personalized dashboard...</p>
+            <div class="welcome-loader">
+                <div class="loader-dot"></div>
+                <div class="loader-dot"></div>
+                <div class="loader-dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== SUPPORT SECTION ========== -->
+    <section id="support" class="page-section content-section glass" style="display: none; padding: 4rem 2rem;">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 4rem;">
+                <h2 class="section-title">Support Center</h2>
+                <p class="section-subtitle">How can we help you today?</p>
+                <div class="search-wrapper glass" style="max-width: 600px; margin: 2rem auto;">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="Search for answers..." class="search-input" style="width: 100%;">
+                </div>
+            </div>
+
+            <div class="support-grid"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;">
+                <!-- FAQ Section -->
+                <div class="faq-container">
+                    <h3 style="margin-bottom: 2rem;">Frequently Asked Questions</h3>
+                    <div class="faq-list">
+                        <div class="faq-item glass"
+                            style="margin-bottom: 1rem; border-radius: var(--radius-md); overflow: hidden;">
+                            <button class="faq-question"
+                                style="width: 100%; text-align: left; padding: 1.5rem; background: transparent; border: none; color: white; cursor: pointer; display: flex; justify-content: space-between; align-items: center;"
+                                onclick="toggleFaq(this)">
+                                <span>How do I get my API Key?</span>
+                                <span>+</span>
+                            </button>
+                            <div class="faq-answer"
+                                style="padding: 0 1.5rem 1.5rem; color: var(--text-muted); display: none;">
+                                You can generate and manage your API keys from the "API Keys" tab in your Dashboard
+                                after signing in.
+                            </div>
+                        </div>
+                        <div class="faq-item glass"
+                            style="margin-bottom: 1rem; border-radius: var(--radius-md); overflow: hidden;">
+                            <button class="faq-question"
+                                style="width: 100%; text-align: left; padding: 1.5rem; background: transparent; border: none; color: white; cursor: pointer; display: flex; justify-content: space-between; align-items: center;"
+                                onclick="toggleFaq(this)">
+                                <span>What is the daily sending limit?</span>
+                                <span>+</span>
+                            </button>
+                            <div class="faq-answer"
+                                style="padding: 0 1.5rem 1.5rem; color: var(--text-muted); display: none;">
+                                Free accounts have a limit of 100 emails per day. Pro and Enterprise plans offer
+                                significantly higher limits.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form Section -->
+                <div class="contact-section">
+                    <h3 style="margin-bottom: 2rem;">Send us a message</h3>
+                    <form id="supportForm" class="glass" style="padding: 2.5rem; border-radius: var(--radius-lg);">
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label
+                                style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);">Subject</label>
+                            <input type="text" class="form-input glass" placeholder="Technical Issue" required
+                                style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--glass-border); border-radius: 8px;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label
+                                style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);">Message</label>
+                            <textarea class="form-input glass" rows="4" placeholder="Describe your issue..." required
+                                style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--glass-border); border-radius: 8px; resize: none;"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary full-width">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating Help Button -->
+    <button class="fab-help glass" onclick="navigate('support')" aria-label="Get Help"
+        style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; z-index: 1000; border: 1px solid var(--google-blue); color: var(--google-blue); font-size: 1.5rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: rgba(66, 133, 244, 0.1); backdrop-filter: blur(10px);">
+        ❓
+    </button>
+
+    <section id="playground" class="page-section content-section glass" style="display: none; padding: 6rem 2rem;">
+        <div class="container" style="max-width: 1200px;">
+            <div class="section-header" style="text-align: center; margin-bottom: 4rem;">
+                <h2 class="section-title">API Playground</h2>
+                <p class="section-subtitle">Test our API endpoints in real-time. No setup required.</p>
+                <div class="tag"
+                    style="background: rgba(66, 133, 244, 0.1); color: var(--google-blue); border: 1px solid rgba(66, 133, 244, 0.2); font-size: 0.85rem; margin-top: 1rem; display: inline-block;">
+                    v1.0 Stable</div>
+            </div>
+
+            <div class="explorer-grid"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 2.5rem;">
+                <!-- Try it Now Form -->
+                <div class="glass" style="padding: 2.5rem; height: fit-content;">
+                    <h3 style="margin-bottom: 0.5rem;">Configure Request</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">Customize your email
+                        payload to see the generated code and response.</p>
+
+                    <div class="explorer-form" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <div class="input-group">
+                            <label
+                                style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">Recipient
+                                Email</label>
+                            <input type="email" id="explorerTo" class="glass" placeholder="user@example.com"
+                                style="width: 100%; padding: 1rem; color: white;" oninput="updateAPIExplorerSnippet()">
+                        </div>
+
+                        <div class="input-group">
+                            <label
+                                style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">Subject
+                                Line</label>
+                            <input type="text" id="explorerSubject" class="glass"
+                                placeholder="Hello from GmailDev Playground"
+                                style="width: 100%; padding: 1rem; color: white;" oninput="updateAPIExplorerSnippet()">
+                        </div>
+
+                        <div class="input-group">
+                            <label
+                                style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">Email
+                                Content (HTML)</label>
+                            <textarea id="explorerBody" class="glass"
+                                placeholder="<h1>Welcome</h1><p>This is a test email sent via Playground.</p>"
+                                style="width: 100%; min-height: 200px; padding: 1rem; color: white; line-height: 1.6; font-family: monospace;"
+                                oninput="updateAPIExplorerSnippet()"></textarea>
+                        </div>
+
+                        <button class="btn btn-primary glow" id="sendExplorerBtn" onclick="sendExplorerEmail()"
+                            style="width: 100%; padding: 1.2rem; font-weight: bold; font-size: 1rem;">
+                            <span>🚀 Run Request</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Real-time Code Snippet -->
+                <div class="playground-code-area glass"
+                    style="background: #0d0e12; display: flex; flex-direction: column; min-height: 600px; border-radius: 16px; overflow: hidden;">
+                    <div class="playground-header"
+                        style="border-bottom: 1px solid rgba(255,255,255,0.05); padding: 1.25rem 2rem; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2);">
+                        <div class="playground-tabs" style="display: flex; gap: 1.5rem;">
+                            <button class="play-tab active" onclick="switchLanguage('javascript')">JavaScript</button>
+                            <button class="play-tab" onclick="switchLanguage('python')">Python</button>
+                            <button class="play-tab" onclick="switchLanguage('curl')">cURL</button>
+                        </div>
+                        <button class="btn btn-outline btn-sm" onclick="copyAPIPlaygroundCode()"
+                            style="padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; border-color: rgba(255,255,255,0.1);">
+                            📋 Copy Code
+                        </button>
+                    </div>
+
+                    <div class="playground-body" style="flex: 1; padding: 2rem; position: relative; overflow: hidden;">
+                        <pre id="explorerSnippetContainer"
+                            style="margin: 0; font-family: 'Roboto Mono', monospace; font-size: 0.95rem; line-height: 1.7; color: #e8eaed; overflow: auto; height: 100%;"><code id="explorerSnippet">gmailDev.send({
+  to: "user@example.com",
+  subject: "Hello World",
+  body: "Testing GmailDev API..."
+});</code></pre>
+
+                        <!-- Response Visualization -->
+                        <div id="apiResponse" class="glass"
+                            style="display: none; position: absolute; bottom: 2rem; left: 2rem; right: 2rem; background: #1a1b23; border: 1px solid var(--google-blue); padding: 1.5rem; animation: slideUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <span
+                                    style="font-size: 0.8rem; font-weight: bold; color: var(--google-blue); letter-spacing: 1px;">RESPONSE</span>
+                                <span id="responseStatus" class="tag"
+                                    style="font-size: 0.75rem; background: rgba(52, 168, 83, 0.1); color: var(--google-green); border: 1px solid rgba(52, 168, 83, 0.2);">200
+                                    OK</span>
+                            </div>
+                            <pre id="responseBody"
+                                style="margin: 0; font-size: 0.85rem; color: var(--google-green); font-family: 'Roboto Mono', monospace; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px;"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="status" class="page-section glass" style="display: none; padding: 4rem 2rem;">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 4rem;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">System Status</h2>
+                <div class="status-badge-overall glass"
+                    style="display: inline-flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.5rem; border-radius: var(--radius-full); background: rgba(52,168,83,0.1); border: 1px solid rgba(52,168,83,0.3); color: var(--google-green); font-weight: bold;">
+                    <span class="status-dot pulse"
+                        style="width: 12px; height: 12px; background: var(--google-green); border-radius: 50%;"></span>
+                    All Systems Operational
+                </div>
+            </div>
+
+            <div class="status-grid"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                <!-- US East -->
+                <div class="glass" style="padding: 2rem;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h4 style="margin: 0;">US East (N. Virginia)</h4>
+                        <span style="color: var(--google-green);">Operational</span>
+                    </div>
+                    <div class="uptime-graph" style="display: flex; gap: 4px; height: 30px; align-items: flex-end;">
+                        <div
+                            style="flex: 1; height: 100%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                        <div
+                            style="flex: 1; height: 100%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                        <div
+                            style="flex: 1; height: 100%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                        <div
+                            style="flex: 1; height: 90%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                        <div
+                            style="flex: 1; height: 100%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-muted);">
+                        <span>30 days ago</span>
+                        <span>99.98% uptime</span>
+                    </div>
+                </div>
+
+                <!-- US West -->
+                <div class="glass" style="padding: 2rem;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h4 style="margin: 0;">US West (Oregon)</h4>
+                        <span style="color: var(--google-green);">Operational</span>
+                    </div>
+                    <div class="uptime-graph" style="display: flex; gap: 4px; height: 30px; align-items: flex-end;">
+                        <div
+                            style="flex: 1; height: 100%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                        <div
+                            style="flex: 1; height: 100%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                        <div
+                            style="flex: 1; height: 85%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                        <div
+                            style="flex: 1; height: 100%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                        <div
+                            style="flex: 1; height: 100%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-muted);">
+                        <span>30 days ago</span>
+                        <span>100% uptime</span>
+                    </div>
+                </div>
+
+                <!-- Europe -->
+                <div class="glass" style="padding: 2rem;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h4 style="margin: 0;">Europe (Frankfurt)</h4>
+                        <span style="color: var(--google-green);">Operational</span>
+                    </div>
+                    <div class="uptime-graph" style="display: flex; gap: 4px; height: 30px; align-items: flex-end;">
+                        <div
+                            style="flex: 1; height: 100%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                        <div
+                            style="flex: 1; height: 100%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                        <div
+                            style="flex: 1; height: 100%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                        <div
+                            style="flex: 1; height: 100%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                        <div
+                            style="flex: 1; height: 95%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-muted);">
+                        <span>30 days ago</span>
+                        <span>99.99% uptime</span>
+                    </div>
+                </div>
+
+                <!-- API Services -->
+                <div class="glass" style="padding: 2rem;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h4 style="margin: 0;">API Gateway</h4>
+                        <span style="color: var(--google-green);">Operational</span>
+                    </div>
+                    <div class="uptime-graph" style="display: flex; gap: 4px; height: 30px; align-items: flex-end;">
+                        <div
+                            style="flex: 1; height: 100%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                        <div
+                            style="flex: 1; height: 100%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                        <div
+                            style="flex: 1; height: 100%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                        <div
+                            style="flex: 1; height: 100%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                        <div
+                            style="flex: 1; height: 100%; background: var(--google-green); border-radius: 2px; opacity: 0.8;">
+                        </div>
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-muted);">
+                        <span>30 days ago</span>
+                        <span>100% uptime</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Incident History -->
+            <div class="glass" style="margin-top: 3rem; padding: 2rem;">
+                <h3 style="margin-bottom: 2rem;">Incidents History</h3>
+                <div class="incident-item"
+                    style="border-left: 4px solid var(--google-blue); padding: 1.5rem; margin-bottom: 1.5rem; background: rgba(255,255,255,0.02); border-radius: 0 12px 12px 0;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="font-weight: bold; color: var(--google-blue);">Partial Service Outage - US
+                            East</span>
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">Jan 08, 2026</span>
+                    </div>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted);">Impacted SMTP relay
+                        services in the US-East region for approximately 45 minutes.</p>
+                    <div style="font-size: 0.85rem;">
+                        <span style="color: var(--google-green); font-weight: bold;">Resolved:</span>
+                        <span>The issue was identified as a routing misalignment and has been fully corrected.</span>
+                    </div>
+                </div>
+
+                <div class="incident-item"
+                    style="border-left: 4px solid var(--google-yellow); padding: 1.5rem; margin-bottom: 1.5rem; background: rgba(255,255,255,0.02); border-radius: 0 12px 12px 0;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="font-weight: bold; color: var(--google-yellow);">Scheduled Maintenance</span>
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">Jan 01, 2026</span>
+                    </div>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted);">Upgraded core database
+                        infrastructure to improve query performance.</p>
+                    <div style="font-size: 0.85rem;">
+                        <span style="color: var(--google-green); font-weight: bold;">Completed:</span>
+                        <span>Maintenance completed successfully without downtime.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer glass" role="contentinfo">
+        <div class="footer-content">
+            <p>Designed & Developed with ❤️ by <span>Ojas</span></p>
+            <p class="copyright">&copy; 2026 GmailDev. All rights reserved.</p>
+        </div>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact</a>
+        </div>
+    </footer>
+
+    <!-- ========== SCRIPTS ========== -->
+
+    <!-- Spline 3D Viewer -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.32/build/spline-viewer.js"></script>
+
+    <!-- Main Application Script -->
+    <script src="script.js?v=fixed_nav_2" defer></script>
+
+    <!-- Inline Scripts for Authentication & UI -->
+
+    <script>
+        // ========== GOOGLE AUTHENTICATION ==========
+        // ========== GOOGLE AUTHENTICATION ==========
+        // ========== AUTHENTICATION NOTE ==========
+        // Legacy Google Sign-In removed. Using Firebase Native Auth.
+
+        /* parseJwt function is no longer needed but keeping it helper or removing it */
+        /* Removing parseJwt as it's not used anymore */
+
+        // ========== INITIALIZE APP ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            // ========== MODAL HANDLERS ==========
+            const authModal = document.getElementById('authModal');
+            const emailModal = document.getElementById('emailModal');
+            const projectModal = document.getElementById('projectModal');
+            const profileModal = document.getElementById('profileModal');
+
+            function openModal(modal) {
+                if (modal) {
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+
+            function closeModal(modal) {
+                if (modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            }
+
+            // Profile Modal
+            document.getElementById('closeProfileModal')?.addEventListener('click', () => closeModal(profileModal));
+
+            // Auth Modal
+            document.querySelectorAll('.login-trigger').forEach(btn => {
+                btn.addEventListener('click', () => openModal(authModal));
+            });
+            document.getElementById('closeAuthModal')?.addEventListener('click', () => closeModal(authModal));
+
+            // Email Modal
+            document.getElementById('openSendEmailModal')?.addEventListener('click', () => openModal(emailModal));
+            document.getElementById('closeEmailModal')?.addEventListener('click', () => closeModal(emailModal));
+
+            // Project Modal
+            document.getElementById('createProjectBtn')?.addEventListener('click', () => openModal(projectModal));
+            document.getElementById('createProjectBtn2')?.addEventListener('click', () => openModal(projectModal));
+            document.getElementById('closeProjectModal')?.addEventListener('click', () => closeModal(projectModal));
+
+            // Close modals on overlay click
+            [authModal, emailModal, projectModal, profileModal].forEach(modal => {
+                modal?.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal(modal);
+                });
+            });
+
+            // ========== AUTH FORM TOGGLE ==========
+            const loginToggle = document.getElementById('loginToggle');
+            const signupToggle = document.getElementById('signupToggle');
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const authTitle = document.getElementById('authTitle');
+            const authSubtitle = document.getElementById('authSubtitle');
+
+            loginToggle?.addEventListener('click', () => {
+                loginToggle.classList.add('active');
+                signupToggle.classList.remove('active');
+                loginForm.classList.add('active-form');
+                signupForm.classList.remove('active-form');
+                authTitle.textContent = "Sign In";
+                authSubtitle.textContent = "Access your developer dashboard";
+                loginToggle.setAttribute('aria-pressed', 'true');
+                signupToggle.setAttribute('aria-pressed', 'false');
+            });
+
+            // Signup Toggle listener removed
+
+            // ========== PASSWORD VISIBILITY TOGGLE ==========
+            document.querySelectorAll('.toggle-password').forEach(toggle => {
+                toggle.addEventListener('click', function () {
+                    const input = this.previousElementSibling;
+                    if (input && input.type === 'password') {
+                        input.type = 'text';
+                        this.textContent = '🙈';
+                    } else if (input) {
+                        input.type = 'password';
+                        this.textContent = '👁️';
+                    }
+                });
+            });
+
+            // Password validation for signup removed
+
+            // ========== FORM SUBMISSIONS ==========
+            loginForm?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                const errorMsg = document.getElementById('loginError');
+
+                errorMsg.style.display = 'none';
+
+                if (password.length < 6) {
+                    errorMsg.textContent = "❌ Password must be at least 6 characters";
+                    errorMsg.style.display = 'block';
+                    loginForm.classList.add('shake');
+                    setTimeout(() => loginForm.classList.remove('shake'), 500);
+                    return;
+                }
+
+                loginUser(email, password);
+            });
+
+            // Signup form submission removed
+
+            // ========== PROJECT FORM ==========
+            const projectForm = document.getElementById('projectForm');
+            projectForm?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('projectName').value;
+                const domain = document.getElementById('projectDomain').value;
+
+                if (typeof window.createProject === 'function') {
+                    window.createProject(e);
+                }
+            });
+
+            // ========== EMAIL FORM ==========
+            const emailForm = document.getElementById('emailForm');
+            emailForm?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const to = document.getElementById('emailTo').value;
+                const subject = document.getElementById('emailSubject').value;
+                const body = document.getElementById('emailBody').value;
+
+                if (typeof window.sendEmail === 'function') {
+                    window.sendEmail(to, subject, body);
+                } else if (typeof sendEmail === 'function') {
+                    sendEmail(to, subject, body);
+                }
+            });
+
+            // ========== MOBILE MENU TOGGLE ==========
+            const menuToggle = document.getElementById('menuToggle');
+            const mobileNav = document.getElementById('mobileNav');
+
+            menuToggle?.addEventListener('click', () => {
+                const isOpen = mobileNav?.classList.toggle('open');
+                menuToggle.setAttribute('aria-expanded', isOpen);
+            });
+
+            // ========== KEYBOARD ACCESSIBILITY ==========
+            document.querySelectorAll('[role="button"]').forEach(el => {
+                el.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        el.click();
+                    }
+                });
+            });
+
+            // ========== CHECK AUTH STATUS ==========
+            if (typeof checkAuth === 'function') {
+                checkAuth();
+            }
+        });
+    </script>
+</body>
+
+</html>
