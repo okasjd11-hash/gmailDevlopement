@@ -450,10 +450,22 @@ window.handleVerifyOTP = async function (e) {
 
             if (AUTH_PENDING_DATA.type === 'signup') {
                 // Final signup step
-                await auth.createUserWithEmailAndPassword(AUTH_PENDING_DATA.email, AUTH_PENDING_DATA.password);
-                const user = auth.currentUser;
-                await user.updateProfile({ displayName: AUTH_PENDING_DATA.name });
-                await initFirestoreUser(user);
+                try {
+                    await auth.createUserWithEmailAndPassword(AUTH_PENDING_DATA.email, AUTH_PENDING_DATA.password);
+                    const user = auth.currentUser;
+                    await user.updateProfile({ displayName: AUTH_PENDING_DATA.name });
+                    await initFirestoreUser(user);
+                } catch (createError) {
+                    if (createError.code === 'auth/email-already-in-use') {
+                        console.log('User already exists, attempting login instead...');
+                        // Attempt to sign in with the same credentials
+                        await auth.signInWithEmailAndPassword(AUTH_PENDING_DATA.email, AUTH_PENDING_DATA.password);
+                        const user = auth.currentUser;
+                        // Determine if we need to update profile or init user data (optional, but good for robustness)
+                    } else {
+                        throw createError; // Re-throw other errors
+                    }
+                }
             } else {
                 await auth.signInWithEmailAndPassword(AUTH_PENDING_DATA.email, AUTH_PENDING_DATA.password);
             }
@@ -462,7 +474,14 @@ window.handleVerifyOTP = async function (e) {
             CURRENT_OTP = null;
         } catch (error) {
             window.IS_VERIFYING_OTP = true; // Error occurred, keep protecting the flow if needed
-            showAuthError('otpError', error.message);
+            console.error("Auth Error:", error);
+
+            let message = error.message;
+            if (error.code === 'auth/wrong-password') {
+                message = 'The account already exists, but the password was incorrect.';
+            }
+
+            showAuthError('otpError', message);
             btn.textContent = originalText;
             btn.disabled = false;
         }
