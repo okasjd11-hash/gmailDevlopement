@@ -2865,18 +2865,11 @@ window.saveWebhook = async function (e) {
     };
 
     try {
-        if (APP_STATE.user && window.db) {
-            try {
-                await window.db.collection('users').doc(APP_STATE.user.uid).collection('webhooks').add(newWebhook);
-            } catch (err) {
-                console.error("Cloud save failed", err);
-                // Continue locally even if cloud fails
-            }
-        }
-
+        // 1. Optimistic Update (Local State)
         APP_STATE.webhooks.unshift(newWebhook);
         localStorage.setItem('gd_webhooks', JSON.stringify(APP_STATE.webhooks));
 
+        // 2. UI Updates
         renderWebhooks();
         const webhookModal = document.getElementById('webhookModal');
         if (webhookModal) {
@@ -2887,6 +2880,15 @@ window.saveWebhook = async function (e) {
         logActivity('Webhook Created', `Added endpoint: ${url}`);
 
         showToast("Webhook added successfully!", "success");
+
+        // 3. Cloud Sync (Background - Non-blocking)
+        if (APP_STATE.user && window.db) {
+            window.db.collection('users').doc(APP_STATE.user.uid).collection('webhooks').add(newWebhook)
+                .then(() => console.log('Webhook synced to cloud'))
+                .catch(err => console.error("Cloud save failed (background)", err));
+        }
+
+
     } catch (err) {
         console.error("Error saving webhook:", err);
         showToast("Failed to add webhook. Please try again.", "error");
