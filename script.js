@@ -2898,22 +2898,47 @@ window.triggerWebhooks = async function (eventType, data) {
 
     console.log(`Triggering ${activeHooks.length} webhooks for event: ${eventType}`);
 
-    activeHooks.forEach(hook => {
+    activeHooks.forEach(async hook => {
         // Log the attempt
         logActivity('Webhook Triggered', `${eventType} -> ${hook.url}`);
 
-        // In a real SaaS, this would be a server-side fetch.
-        // We simulate it here and show it in the logs.
-        setTimeout(() => {
+        try {
+            const response = await fetch(hook.url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    event: eventType,
+                    timestamp: new Date().toISOString(),
+                    data: data
+                })
+            });
+
+            if (response.ok) {
+                const logEntry = {
+                    timestamp: Date.now(),
+                    subject: 'Webhook Success',
+                    details: `POST ${hook.url} [${eventType}] - 200 OK`,
+                    status: 'Success'
+                };
+                APP_STATE.activityLog.unshift(logEntry);
+            } else {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+        } catch (error) {
+            console.error('Webhook failed:', error);
             const logEntry = {
                 timestamp: Date.now(),
-                subject: 'Webhook Executed',
-                details: `POST ${hook.url} [${eventType}]`,
-                status: 'Success'
+                subject: 'Webhook Failed',
+                details: `POST ${hook.url} [${eventType}] - ${error.message}`,
+                status: 'Error'
             };
             APP_STATE.activityLog.unshift(logEntry);
-            renderLogs();
-            renderActivityLog();
-        }, 500);
+        }
+
+        renderLogs();
+        renderActivityLog();
     });
 };

@@ -1161,7 +1161,7 @@
                 <p>Register a URL to receive event notifications</p>
             </div>
 
-            <form id="webhookForm" onsubmit="window.saveWebhook(event)" novalidate>
+            <form id="webhookForm" novalidate>
                 <div class="input-group">
                     <label for="webhookUrl">Target URL</label>
                     <input type="url" id="webhookUrl" placeholder="https://your-api.com/webhook" required
@@ -1188,7 +1188,8 @@
                 </div>
 
                 <div style="margin-top: 2rem;">
-                    <button type="submit" class="btn btn-primary full-width">Add Webhook</button>
+                    <button type="button" class="btn btn-primary full-width" onclick="window.saveWebhook()">Add
+                        Webhook</button>
                 </div>
             </form>
         </div>
