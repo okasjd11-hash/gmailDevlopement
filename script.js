@@ -2969,6 +2969,7 @@ window.triggerWebhooks = async function (eventType, data) {
 
 // --- TOAST NOTIFICATIONS ---
 window.showToast = function (message, type = 'info') {
+    console.log(`showToast called: ${message} (${type})`);
     let container = document.querySelector('.toast-container');
     if (!container) {
         container = document.createElement('div');
