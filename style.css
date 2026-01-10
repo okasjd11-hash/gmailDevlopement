@@ -1845,9 +1845,11 @@ body {
     transition: opacity var(--transition-base);
 }
 
-.modal-overlay.active {
-    display: flex;
-    opacity: 1;
+.modal-overlay.active,
+#webhookModal.active {
+    display: flex !important;
+    opacity: 1 !important;
+    z-index: 9999 !important;
 }
 
 .modal-content {
