@@ -1641,6 +1641,18 @@
         // ========== AUTHENTICATION NOTE ==========
         // Legacy Google Sign-In removed. Using Firebase Native Auth.
 
+        // --- WEBHOOK MODAL HELPER (Added for reliability) ---
+        window.openWebhookModal = function () {
+            const modal = document.getElementById('webhookModal');
+            if (modal) {
+                console.log("Opening webhook modal via inline script");
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } else {
+                alert("Error: Webhook modal element not found!");
+            }
+        };
+
         /* parseJwt function is no longer needed but keeping it helper or removing it */
         /* Removing parseJwt as it's not used anymore */
 
