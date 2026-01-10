@@ -2847,8 +2847,8 @@ window.saveWebhook = async function (e) {
     if (document.getElementById('eventEmailSent').checked) events.push('email.sent');
     if (document.getElementById('eventEmailError').checked) events.push('email.error');
 
-    if (!url) return alert("Please enter a target URL");
-    if (events.length === 0) return alert("Please select at least one event");
+    if (!url) return showToast("Please enter a target URL", "error");
+    if (events.length === 0) return showToast("Please select at least one event", "error");
 
     // Disable button to prevent double submission
     if (submitBtn) {
@@ -2886,11 +2886,10 @@ window.saveWebhook = async function (e) {
         form.reset();
         logActivity('Webhook Created', `Added endpoint: ${url}`);
 
-        // Optional: show success toast or alert
-        // alert("Webhook added successfully!"); 
+        showToast("Webhook added successfully!", "success");
     } catch (err) {
         console.error("Error saving webhook:", err);
-        alert("Failed to add webhook. Please try again.");
+        showToast("Failed to add webhook. Please try again.", "error");
     } finally {
         // Re-enable button
         if (submitBtn) {
