@@ -2838,6 +2838,10 @@ window.renderWebhooks = function () {
 window.saveWebhook = async function (e) {
     if (e) e.preventDefault();
 
+    const form = document.getElementById('webhookForm');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn ? submitBtn.innerText : 'Add Webhook';
+
     const url = document.getElementById('webhookUrl').value;
     const events = [];
     if (document.getElementById('eventEmailSent').checked) events.push('email.sent');
@@ -2845,6 +2849,12 @@ window.saveWebhook = async function (e) {
 
     if (!url) return alert("Please enter a target URL");
     if (events.length === 0) return alert("Please select at least one event");
+
+    // Disable button to prevent double submission
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Adding...";
+    }
 
     const newWebhook = {
         id: 'wh_' + Math.random().toString(36).substr(2, 9),
@@ -2854,25 +2864,40 @@ window.saveWebhook = async function (e) {
         createdAt: new Date().toISOString()
     };
 
-    if (APP_STATE.user) {
-        try {
-            await db.collection('users').doc(APP_STATE.user.uid).collection('webhooks').add(newWebhook);
-        } catch (err) {
-            console.error("Cloud save failed", err);
+    try {
+        if (APP_STATE.user && window.db) {
+            try {
+                await window.db.collection('users').doc(APP_STATE.user.uid).collection('webhooks').add(newWebhook);
+            } catch (err) {
+                console.error("Cloud save failed", err);
+                // Continue locally even if cloud fails
+            }
+        }
+
+        APP_STATE.webhooks.unshift(newWebhook);
+        localStorage.setItem('gd_webhooks', JSON.stringify(APP_STATE.webhooks));
+
+        renderWebhooks();
+        const webhookModal = document.getElementById('webhookModal');
+        if (webhookModal) {
+            webhookModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        form.reset();
+        logActivity('Webhook Created', `Added endpoint: ${url}`);
+
+        // Optional: show success toast or alert
+        // alert("Webhook added successfully!"); 
+    } catch (err) {
+        console.error("Error saving webhook:", err);
+        alert("Failed to add webhook. Please try again.");
+    } finally {
+        // Re-enable button
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalBtnText;
         }
     }
-
-    APP_STATE.webhooks.unshift(newWebhook);
-    localStorage.setItem('gd_webhooks', JSON.stringify(APP_STATE.webhooks));
-
-    renderWebhooks();
-    const webhookModal = document.getElementById('webhookModal');
-    if (webhookModal) {
-        webhookModal.classList.remove('active');
-        document.body.style.overflow = 'auto';
-    }
-    document.getElementById('webhookForm').reset();
-    logActivity('Webhook Created', `Added endpoint: ${url}`);
 };
 
 window.deleteWebhook = async function (id) {

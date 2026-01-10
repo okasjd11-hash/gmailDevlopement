@@ -1161,7 +1161,7 @@
                 <p>Register a URL to receive event notifications</p>
             </div>
 
-            <form id="webhookForm" novalidate>
+            <form id="webhookForm" novalidate onsubmit="event.preventDefault(); window.saveWebhook(event)">
                 <div class="input-group">
                     <label for="webhookUrl">Target URL</label>
                     <input type="url" id="webhookUrl" placeholder="https://your-api.com/webhook" required
@@ -1188,8 +1188,7 @@
                 </div>
 
                 <div style="margin-top: 2rem;">
-                    <button type="button" class="btn btn-primary full-width" onclick="window.saveWebhook()">Add
-                        Webhook</button>
+                    <button type="submit" class="btn btn-primary full-width">Add Webhook</button>
                 </div>
             </form>
         </div>
@@ -1642,83 +1641,6 @@
         // ========== AUTHENTICATION NOTE ==========
         // Legacy Google Sign-In removed. Using Firebase Native Auth.
 
-        // --- WEBHOOK MODAL HELPER (Added for reliability) ---
-        window.openWebhookModal = function () {
-            const modal = document.getElementById('webhookModal');
-            if (modal) {
-                console.log("Opening webhook modal via inline script");
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            } else {
-                alert("Error: Webhook modal element not found!");
-            }
-        };
-
-        window.saveWebhook = async function (e) {
-            console.log("saveWebhook triggered via inline script");
-            if (e) e.preventDefault();
-
-            const urlInput = document.getElementById('webhookUrl');
-            const url = urlInput ? urlInput.value : '';
-
-            const events = [];
-            const emailSentCb = document.getElementById('eventEmailSent');
-            const emailErrorCb = document.getElementById('eventEmailError');
-
-            if (emailSentCb && emailSentCb.checked) events.push('email.sent');
-            if (emailErrorCb && emailErrorCb.checked) events.push('email.error');
-
-            if (!url) return alert("Please enter a target URL");
-            if (events.length === 0) return alert("Please select at least one event");
-
-            const newWebhook = {
-                id: 'wh_' + Math.random().toString(36).substr(2, 9),
-                url: url,
-                events: events,
-                status: 'active',
-                createdAt: new Date().toISOString()
-            };
-
-            // Cloud Save (if available)
-            if (window.APP_STATE && window.APP_STATE.user && window.db) {
-                try {
-                    await window.db.collection('users').doc(window.APP_STATE.user.uid).collection('webhooks').add(newWebhook);
-                } catch (err) {
-                    console.error("Cloud save failed", err);
-                }
-            }
-
-            // Local State Update
-            if (window.APP_STATE) {
-                if (!window.APP_STATE.webhooks) window.APP_STATE.webhooks = [];
-                window.APP_STATE.webhooks.unshift(newWebhook);
-                localStorage.setItem('gd_webhooks', JSON.stringify(window.APP_STATE.webhooks));
-
-                if (typeof window.renderWebhooks === 'function') {
-                    window.renderWebhooks();
-                } else {
-                    // Simple refresh fallback if render function missing
-                    location.reload();
-                }
-            }
-
-            // Close Modal
-            const webhookModal = document.getElementById('webhookModal');
-            if (webhookModal) {
-                webhookModal.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-
-            // Reset Form (manually since e sometimes isn't passed correctly)
-            const form = document.getElementById('webhookForm');
-            if (form) form.reset();
-
-            if (typeof window.logActivity === 'function') {
-                window.logActivity('Webhook Created', `Added endpoint: ${url}`);
-            }
-
-            alert("Webhook added successfully!");
-        };
 
         /* parseJwt function is no longer needed but keeping it helper or removing it */
         /* Removing parseJwt as it's not used anymore */
