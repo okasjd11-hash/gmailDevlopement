@@ -20,6 +20,7 @@ try {
 
 const auth = firebase.auth();
 const db = firebase.firestore();
+window.db = db; // Expose for inline scripts
 
 // --- STATE MANAGEMENT ---
 // --- SECURITY UTILITIES ---
