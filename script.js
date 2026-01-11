@@ -2487,6 +2487,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Other initializations... (existing logic above might already have DOMContentLoaded)
     initSearch();
     initOnboarding();
+    initSupportSearch();
 });
 
 // --- ONBOARDING CHECKLIST LOGIC ---
@@ -2762,6 +2763,28 @@ window.toggleFaq = function (btn) {
         answer.style.display = 'block';
         icon.innerText = '-';
     }
+};
+
+window.initSupportSearch = function () {
+    const searchInput = document.getElementById('supportSearchInput');
+    const faqItems = document.querySelectorAll('.faq-item');
+
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question span:first-child')?.innerText.toLowerCase() || '';
+            const answer = item.querySelector('.faq-answer')?.innerText.toLowerCase() || '';
+
+            if (question.includes(query) || answer.includes(query)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
 };
 
 // Support Form Submission
