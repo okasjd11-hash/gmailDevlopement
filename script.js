@@ -1145,6 +1145,93 @@ async function logActivity(subject, details) {
     }
 }
 
+// --- EMAIL SENDING ---
+window.sendEmail = async function (to, subject, body) {
+    if (!to || !subject || !body) {
+        alert('Please fill in all fields');
+        return;
+    }
+
+    const btn = document.getElementById('sendEmailBtn');
+    const originalText = btn ? btn.textContent : 'Send Email';
+
+    if (btn) {
+        btn.textContent = 'Sending...';
+        btn.disabled = true;
+    }
+
+    const emailData = {
+        to,
+        subject,
+        body,
+        messageId: 'msg_' + Date.now(),
+        timestamp: new Date().toISOString()
+    };
+
+    try {
+        // Initialize EmailJS if not already done
+        if (typeof emailjs !== 'undefined') {
+            emailjs.init('oY19x3FTgJGF60ql9');
+
+            await emailjs.send('service_xyzzmie', 'template_pidbj0i', {
+                to_email: to,
+                email: to,
+                subject: subject,
+                message: body,
+                to_name: to.split('@')[0]
+            });
+        }
+
+        // Update stats
+        await updateStats({
+            emails: APP_STATE.stats.emails + 1,
+            requests: APP_STATE.stats.requests + 1
+        });
+
+        // Log activity
+        await logActivity('Email Sent', `To: ${to} - ${subject}`);
+
+        // Trigger webhooks for email.sent event
+        await triggerWebhooks('email.sent', {
+            ...emailData,
+            status: 'sent'
+        });
+
+        // Close modal
+        const emailModal = document.getElementById('emailModal');
+        if (emailModal) {
+            emailModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Reset form
+        const emailForm = document.getElementById('emailForm');
+        if (emailForm) emailForm.reset();
+
+        showToast('✅ Email sent successfully!', 'success');
+
+    } catch (error) {
+        console.error('Email send error:', error);
+
+        // Log error
+        await logActivity('Email Failed', `To: ${to} - ${error.message}`);
+
+        // Trigger webhooks for email.error event
+        await triggerWebhooks('email.error', {
+            ...emailData,
+            error: error.message,
+            status: 'failed'
+        });
+
+        showToast(`❌ Failed to send email: ${error.message}`, 'error');
+    } finally {
+        if (btn) {
+            btn.textContent = originalText;
+            btn.disabled = false;
+        }
+    }
+};
+
 async function updateStats(newStats = {}) {
     // Update local state
     APP_STATE.stats = { ...APP_STATE.stats, ...newStats };
@@ -2846,11 +2933,21 @@ window.renderWebhooks = function () {
                 </div>
                 <button onclick="deleteWebhook('${hook.id}')" style="background: none; border: none; color: #ff4757; cursor: pointer; font-size: 1.2rem; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">&times;</button>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); gap: 1rem;">
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <span style="width: 8px; height: 8px; background: ${hook.status === 'active' ? 'var(--google-green)' : '#aaa'}; border-radius: 50%;"></span>
                     <span style="font-size: 0.8rem; color: ${hook.status === 'active' ? 'var(--google-green)' : '#aaa'};">${hook.status === 'active' ? 'Active' : 'Paused'}</span>
                 </div>
+                <div style="display: flex; gap: 8px;">
+                    <button onclick="testWebhook('${hook.id}')" class="btn btn-sm btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; border-color: var(--google-blue); color: var(--google-blue);">
+                        🧪 Test
+                    </button>
+                    <button onclick="toggleWebhookStatus('${hook.id}')" class="btn btn-sm btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; border-color: ${hook.status === 'active' ? 'var(--google-yellow)' : 'var(--google-green)'}; color: ${hook.status === 'active' ? 'var(--google-yellow)' : 'var(--google-green)'};">
+                        ${hook.status === 'active' ? '⏸️ Pause' : '▶️ Resume'}
+                    </button>
+                </div>
+            </div>
+            <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.03);">
                 <small style="color: var(--text-dim); font-size: 0.75rem;">Created: ${new Date(hook.createdAt).toLocaleDateString()}</small>
             </div>
         `;
@@ -2920,6 +3017,74 @@ window.saveWebhook = async function (e) {
         if (submitBtn) {
             submitBtn.disabled = false;
             submitBtn.innerText = originalBtnText;
+        }
+    }
+};
+
+window.testWebhook = async function (id) {
+    const hook = APP_STATE.webhooks.find(h => h.id === id);
+    if (!hook) return;
+
+    showToast('Testing webhook...', 'info');
+
+    const testPayload = {
+        test: true,
+        event: 'email.sent',
+        timestamp: new Date().toISOString(),
+        data: {
+            to: 'test@example.com',
+            subject: 'Test Email from GmailDev',
+            messageId: 'test_' + Date.now(),
+            status: 'sent'
+        }
+    };
+
+    try {
+        const response = await fetch(hook.url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(testPayload)
+        });
+
+        if (response.ok) {
+            showToast('✅ Webhook test successful!', 'success');
+            logActivity('Webhook Test', `${hook.url} - 200 OK`);
+        } else {
+            throw new Error(`HTTP ${response.status}`);
+        }
+    } catch (error) {
+        showToast(`❌ Webhook test failed: ${error.message}`, 'error');
+        logActivity('Webhook Test Failed', `${hook.url} - ${error.message}`);
+    }
+};
+
+window.toggleWebhookStatus = async function (id) {
+    const hook = APP_STATE.webhooks.find(h => h.id === id);
+    if (!hook) return;
+
+    hook.status = hook.status === 'active' ? 'paused' : 'active';
+    localStorage.setItem('gd_webhooks', JSON.stringify(APP_STATE.webhooks));
+    renderWebhooks();
+
+    const action = hook.status === 'active' ? 'resumed' : 'paused';
+    showToast(`Webhook ${action}`, 'success');
+    logActivity('Webhook Status Changed', `${hook.url} - ${hook.status}`);
+
+    // Sync to cloud if logged in
+    if (APP_STATE.user && window.db) {
+        try {
+            const webhookDocs = await window.db.collection('users').doc(APP_STATE.user.uid).collection('webhooks')
+                .where('url', '==', hook.url).get();
+
+            if (!webhookDocs.empty) {
+                const docId = webhookDocs.docs[0].id;
+                await window.db.collection('users').doc(APP_STATE.user.uid).collection('webhooks')
+                    .doc(docId).update({ status: hook.status });
+            }
+        } catch (err) {
+            console.error('Failed to sync webhook status to cloud:', err);
         }
     }
 };
